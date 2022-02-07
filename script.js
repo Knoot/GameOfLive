@@ -1,17 +1,19 @@
+const Params = new URLSearchParams(document.location.search)
+
 import Cell from "./Modules/Cell.js"
 
 const settings = {
-    randomStart: false,
-    startChance: .2,
-    speed: 42,
-    displayGrid: true,
-    gridColor: '#eee',
+    randomStart: parseSetting(strToBool(Params.get('randomStart')), false),
+    startChance: parseSetting(Params.get('startChance'), .2),
+    speed: parseSetting(Params.get('speed'), 42),
+    displayGrid: parseSetting(strToBool(Params.get('displayGrid')), true),
+    gridColor: parseSetting(Params.get('gridColor'), '#eee'),
 }
 const cellSettings = {
-    size: 8,
-    stamina: 10,
-    resurrectionAfter: 50,
-    colored: false,
+    size: parseSetting(Params.get('cellSize'), 8),
+    stamina: parseSetting(Params.get('cellStamina'), 10),
+    resurrectionAfter: parseSetting(Params.get('cellResurrectionAfter'), 50),
+    colored: parseSetting(strToBool(Params.get('cellColored')), false),
 }
 
 const canvas = document.getElementById('grid')
@@ -109,3 +111,20 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 // window.onresize = onResize
+
+function strToBool(str) {
+    if(str === 'true' || str === '1') {
+        return true
+    }
+
+    if (str === 'false' || str === '0') {
+        return false
+    }
+
+    return null
+}
+
+// для IE
+function parseSetting(setting, def) {
+    return setting !== null ? setting : def
+}
